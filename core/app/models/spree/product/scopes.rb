@@ -28,12 +28,14 @@ module Spree
           scope :ascend_by_name, -> { order(name: :asc) }
           scope :descend_by_name, -> { order(name: :desc) }
 
-          add_search_scope :ascend_by_master_price do
-            joins(master: :default_price).order(Spree::Price.arel_table[:amount].asc)
+          Spree::Product.add_search_scope :ascend_by_master_price do
+            joins(master: :default_price).select('spree_products.* , spree_prices.amount')
+                                         .order(Spree::Price.arel_table[:amount].asc)
           end
 
-          add_search_scope :descend_by_master_price do
-            joins(master: :default_price).order(Spree::Price.arel_table[:amount].desc)
+          Spree::Product.add_search_scope :descend_by_master_price do
+            joins(master: :default_price).select('spree_products.* , spree_prices.amount')
+                                         .order(Spree::Price.arel_table[:amount].desc)
           end
 
           add_search_scope :price_between do |low, high|
